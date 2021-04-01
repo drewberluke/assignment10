@@ -1,0 +1,20 @@
+﻿@*Team name view component. This view gets called when the index page is rendered and creates a list
+of buttons with the team names, it dynamically builds the links so that whichever is clicked
+will send that team into the view to be filtered*@ 
+
+@model IEnumerable<Teams>
+
+<a class="btn btn-block btn-outline-secondary" asp-action="Index" asp-controller="Home" asp-route-id="@null">All</a>
+
+@foreach (var x in Model)
+{
+    @*if the team id matches the current team being viewed then a different style is applied to show the user which page they are on*@
+    <a class="btn btn-block @(x.TeamId == ViewBag.Selected ? "btn-primary" : "btn-outline-secondary")"
+        asp-action="Index"
+        asp-controller="Home"
+        asp-route-team="@x.TeamName"
+        asp-route-id="@x.TeamId"
+        asp-route-pageNum="1">
+            @x.TeamName
+    </a>
+}

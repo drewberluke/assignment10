@@ -1,0 +1,90 @@
+﻿@*Andrew Luke
+Sec 004
+Apr 1, 2021
+
+IS 413 – Hilton
+Assignment #10
+For this assignment, we will use the “BowlingLeague” database from IS 402. (The SQLite
+version of the database is attached to the assignment in Learning Suite.)
+Create an app that displays a contact list for all the bowlers in the league: First Name, Middle
+Init, Last Name, Address, City, State, Zip, Phone Number
+Build a filter that allows the user to select a team name and have only the contact names for that
+particular team appear. Make sure the selected team is highlighted in the list. Add a heading
+onto the page with the team name when that particular team is selected
+(#notcoveredinthevideos). Allow the user to click “Home” to go back to the full list of bowlers.
+Add pagination so that only 5 bowlers show up on the screen at a time.
+As always, write good. clean, readable code.*@
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+@model IndexViewModel
+
+<div class="row">
+    <div class="col-2">
+        <br /><br />
+        <vc:teams />
+    </div>
+    <div class="col-10">
+        @*If there is a specific team being displayed then show that team name, otherwise show Bowling League*@
+        @if (ViewBag.Team != null)
+        {
+            <h1 class="text-center"><span>@ViewBag.Team</span> Team Roster</h1>
+        }
+        else
+        {
+            <h1 class="text-center">Bowling League Roster</h1>
+        }
+        <br />
+        <table class="table table-hover table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-center">Player Name</th>
+                    <th scope="col" class="text-center">Player Address</th>
+                    <th scope="col" class="text-center">Player Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*If there are any records returned show them otherwise show there is no players*@
+                @if (Model.Bowlers.Count() > 0)
+                {
+                    @*loop through all bowler objects and print them out*@
+                    @foreach (var x in Model.Bowlers)
+                    {
+                        <tr>
+                            @*make the bowler middle initial look nicer with a . after*@
+                            @if (x.BowlerMiddleInit == null)
+                            {
+                                <td><span>@x.BowlerFirstName</span> <span>@x.BowlerLastName</span></td>
+                            }
+                            else
+                            {
+                                <td><span>@x.BowlerFirstName</span> <span>@x.BowlerMiddleInit</span>. <span>@x.BowlerLastName</span></td>
+                            }
+                            <td><span>@x.BowlerAddress</span><br /><span>@x.BowlerCity</span>, <span>@x.BowlerState</span><br /><span>@x.BowlerZip</span></td>
+                            <td class="text-center">@x.BowlerPhoneNumber</td>
+                        </tr>
+
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center">This team has no players</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @*page numbers, this is populated by the tag helper*@
+        <div class="text-center">
+            <div page-info="@Model.PageNumberingInfo" page-action="Index" page-classes-enabled="true" page-class="btn"
+                 page-class-normal="btn-outline-dark"
+                 page-class-selected="btn-primary"
+                 class="btn-group pull-right m-1"
+                 page-url-category="Model.team">
+            </div>
+        </div>
+    </div>
+</div>
+
